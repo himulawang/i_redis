@@ -1,0 +1,5 @@
+name: i_redis
+description: ParaNoidz IRedis Client for Dart
+dependencies:
+  logging: any
+  unittest: any
