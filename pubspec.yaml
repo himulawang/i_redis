@@ -1,5 +1,11 @@
 name: i_redis
+version: 1.0.0
+authors:
+- ila <himulawang@gmail.com>
+homepage: https://github.com/himulawang/i_redis
 description: ParaNoidz IRedis Client for Dart
+environment:
+  sdk: ">=1.4.0"
 dependencies:
-  logging: any
-  unittest: any
+  logging: ">=0.9.1+1 <0.10.0"
+  unittest: ">=0.11.0 <0.12.0"

@@ -12,7 +12,7 @@ docgen --compile \
  --exclude-lib="dart:core" \
  ./i_redis.dart
 
-cp -rf ./dartdoc-viewer/client/out/web ./docs
-rm -rf ./docs/packages
-cp -rf ./dartdoc-viewer/client/out/packages ./docs/packages
+cp -rf ./dartdoc-viewer/client/out/web ./doc
+rm -rf ./doc/packages
+cp -rf ./dartdoc-viewer/client/out/packages ./doc/packages
 rm -rf ./dartdoc-viewer

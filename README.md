@@ -27,7 +27,8 @@ TODO
 
 You can find any command in test/test_* file.
 
-##
+##License
+
 Copyright (C) 2014 ila
 
 Permission is hereby granted, free of charge, to any person
