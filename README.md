@@ -50,12 +50,11 @@ You can find every api in test/test_*.dart file.
 
 ##Document
 
-TODO
+[LINK](http://himulawang.github.io/i_redis/#i_redis.IRedis)
 
 ##TODO
 
-Use hiredis to replace IRESP decoder.
-https://www.dartlang.org/articles/native-extensions-for-standalone-dart-vm/
+Use [hiredis](https://github.com/redis/hiredis) to replace IRESP decoder. [Article](https://www.dartlang.org/articles/native-extensions-for-standalone-dart-vm/)
 
 ##License
 
