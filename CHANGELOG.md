@@ -1,5 +1,5 @@
 Change Log
 ===
 
-v 1.0
+v 1.0.0
 first revision

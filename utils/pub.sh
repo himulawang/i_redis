@@ -1,4 +1,4 @@
 #!/bin/bash
 
 cd ..
-pub publish --dry-run
+pub publish

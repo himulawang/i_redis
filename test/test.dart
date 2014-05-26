@@ -10,6 +10,9 @@ import 'lib_test.dart';
 
   Redis version need v2.8.9 or above
 
+  !!!! BE CAREFUL WHEN RUNNING THIS TEST SCRIPT  !!!!
+  !!!! THIS SCRIPT WILL WIPE ALL YOUR REDIS DATA !!!!
+
   open Redis instance 127.0.0.1 6379 without password
   open Redis instance 127.0.0.1 6380 with password '123'
  */

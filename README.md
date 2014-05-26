@@ -5,11 +5,26 @@ This is a redis client for dart.
 
 ##Install
 
-TODO
+### Depend on it
+
+Add this to your package's pubspec.yaml file:
+
+```yaml
+dependencies:
+  i_redis: ">=1.0.0 <2.0.0"
+```
+
+### Install it
+
+```sh
+pub get
+```
 
 ##Usage
 
 ```dart
+import 'package:i_redis/i_redis.dart';
+
 IRedis handler = new IRedis(host: '192.168.0.1', port: 6379);
 handler.connect()
 .then((_) {
@@ -23,9 +38,24 @@ handler.connect()
 
 ##API
 
+Example:
+
+```dart
+handler.hmget('testHmget', ['field1', 'field4'])
+.then(expectAsync((result) {
+  expect(result, ['value1', null]);
+}));
+```
+You can find every api in test/test_*.dart file.
+
+##Document
+
 TODO
 
-You can find any command in test/test_* file.
+##TODO
+
+Use hiredis to replace IRESP decoder.
+https://www.dartlang.org/articles/native-extensions-for-standalone-dart-vm/
 
 ##License
 
