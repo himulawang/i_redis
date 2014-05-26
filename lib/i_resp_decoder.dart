@@ -17,10 +17,6 @@ class IRESPDecoder extends Converter {
   num _offset = 0;
 
   String convert(List data) {
-
-  }
-
-  cutPackage(List data) {
     allocate(data);
     num rollbackOffset;
 
@@ -176,6 +172,11 @@ class IRESPDecoder extends Converter {
       str = new String.fromCharCodes(data);
     }
     return str;
+  }
+
+  reset() {
+    _buffer = null;
+    _offset = 0;
   }
 
   void bindOnParsed(Function onParsed) => _onParsed = onParsed;

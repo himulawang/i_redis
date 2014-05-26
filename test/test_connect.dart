@@ -19,7 +19,7 @@ testConnect() {
           return handler.close();
         }))
         .then(expectAsync((_)
-        => expect(handler.status, IRedis.STATUS_DISCONNECTED)));
+          => expect(handler.status, IRedis.STATUS_DISCONNECTED)));
       });
 
       test('input host port', () {

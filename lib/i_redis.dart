@@ -51,6 +51,17 @@ class IRedis extends IRedisCommand {
   Function _monitorOnData = null;
   static const CMD_MONITOR = 'monitor';
 
+  // Reconnect
+  List<Duration> _reconnectTimeSchedule = const [
+    const Duration(milliseconds: 30),
+    const Duration(milliseconds: 100),
+    const Duration(milliseconds: 500),
+    const Duration(seconds: 3),
+    const Duration(seconds: 10),
+    const Duration(seconds: 30),
+  ];
+  num _retryTime = 0;
+
   final IRESPEncoder iRESPEncoder = new IRESPEncoder();
   final IRESPDecoder iRESPDecoder = new IRESPDecoder();
 
@@ -61,6 +72,9 @@ class IRedis extends IRedisCommand {
     String this.password: null });
 
   Future connect() {
+    if (status != STATUS_DISCONNECTED)
+      throw new IRedisException('Cannot connect now.');
+
     // link handler and iRESPDecoder
     iRESPDecoder.bindOnParsed(_onParsed);
     iRESPDecoder.bindOnParserError(_onParserError);
@@ -69,7 +83,6 @@ class IRedis extends IRedisCommand {
       .then(_onConnect)
       .then(_doAuth)
       .then(_selectDB)
-      //.catchError((e) => print(e))
     ;
   }
 
@@ -102,14 +115,45 @@ class IRedis extends IRedisCommand {
     if (status != STATUS_DB_SELECTED) throw new IRedisException('IRedis handler is not ready');
   }
 
+  _reset() {
+    queue = [];
+
+    pubOnSubscribe = {};
+    pubOnUnsubscribe = {};
+    subOnData = {};
+    subOnDone = {};
+
+    pubOnPsubscribe = {};
+    pubOnPunsubscribe = {};
+    psubOnData = {};
+    psubOnDone = {};
+
+    bool MODE_PUBSUB = false;
+    bool MODE_TRANSACTION = false;
+    bool MODE_MONITOR = false;
+
+    BytesBuilder _multiQueue = null;
+
+    Function _monitorOnData = null;
+
+    iRESPDecoder.reset();
+  }
+
   _onConnect(Socket socket) {
     connection = socket;
     connection.listen(_onData, onError: (e) {
-      print(e);
+      String message = e.toString();
+      ILog.severe(message);
+      if (message.contains('Broken pipe')) {
+        _reset();
+        status = STATUS_DISCONNECTED;
+        return _reconnect();
+      }
+
       throw e;
     }, onDone: () {
-      // TODO deal with disconnect event
-      //print('onDone');
+      ILog.fine('Disconnect from redis.');
+      status = STATUS_DISCONNECTED;
     });
     ILog.fine('Connect successfully.');
     status = STATUS_CONNECTED;
@@ -149,9 +193,30 @@ class IRedis extends IRedisCommand {
     });
   }
 
+  _reconnect() {
+    Duration waitFor;
+    if (_retryTime > 5) {
+      waitFor = _reconnectTimeSchedule[5];
+    } else {
+      waitFor = _reconnectTimeSchedule[_retryTime];
+    }
+
+    ++_retryTime;
+
+    new Timer(waitFor, () {
+      ILog.fine('Reconnecting, retry time: ${_retryTime}.');
+      connect()
+      .then((_) => _retryTime = 0)
+      .catchError((e) {
+        ILog.severe(e.toString());
+        _reconnect();
+      });
+    });
+  }
+
   _onData(RawSocketEvent event) {
     if (event == RawSocketEvent.READ) {
-      iRESPDecoder.cutPackage(connection.read());
+      iRESPDecoder.convert(connection.read());
     }
   }
 
