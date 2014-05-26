@@ -3,7 +3,7 @@ library lib_test;
 import 'dart:async';
 import 'package:logging/logging.dart';
 import 'package:unittest/unittest.dart';
-import '../i_redis.dart';
+import '../lib/i_redis.dart';
 
 part 'test_connect.dart';
 part 'test_key.dart';

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:logging/logging.dart';
 
-import '../i_redis.dart';
+import '../lib/i_redis.dart';
 import 'lib_test.dart';
 
 
