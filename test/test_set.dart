@@ -284,7 +284,8 @@ testSet(IRedis handler) {
 
         handler.sdiff(['testSdiff1', 'testSdiff2'])
         .then(expectAsync((result) {
-          expect(result, ['value2', 'value1']);
+          expect(result.contains('value1'), true);
+          expect(result.contains('value2'), true);
         }));
 
       });

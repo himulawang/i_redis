@@ -1,4 +1,4 @@
-i_redis
+IRedis
 ===
 
 This is a redis client for dart.
@@ -28,11 +28,11 @@ import 'package:i_redis/i_redis.dart';
 IRedis handler = new IRedis(host: '192.168.0.1', port: 6379);
 handler.connect()
 .then((_) {
-  print('now we connected');
+  // now we are connected
   return handler.set('myKey', 'myValue');
 }))
 .then((result) {
-  print(result);
+  print(result); // OK
 }));
 ```
 
@@ -41,12 +41,16 @@ handler.connect()
 Example:
 
 ```dart
-handler.hmget('testHmget', ['field1', 'field4'])
-.then(expectAsync((result) {
-  expect(result, ['value1', null]);
-}));
+handler.hmset('testHmget', {'field1': 'value1', 'field2': 'value2', 'field3': 'value3'})
+.then((result) {
+  print(result); // 'OK'
+  return handler.hmget('testHmget', ['field1', 'field4']);
+})
+.then((result) {
+  print(result); // ['value1', null];
+});
 ```
-You can find every api in test/test_*.dart file.
+You can find every api example in test/test_*.dart files.
 
 ##Document
 
@@ -54,7 +58,7 @@ You can find every api in test/test_*.dart file.
 
 ##TODO
 
-Use [hiredis](https://github.com/redis/hiredis) to replace IRESP decoder. [Article](https://www.dartlang.org/articles/native-extensions-for-standalone-dart-vm/)
+Use [hiredis](https://github.com/redis/hiredis) to replace IRESP decoder. [Ref](https://www.dartlang.org/articles/native-extensions-for-standalone-dart-vm/).
 
 ##License
 
