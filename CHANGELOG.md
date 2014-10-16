@@ -1,5 +1,7 @@
 Change Log
 ===
+v 1.0.3
+fixed: RawSocketEvent Changed, return Uint8List instead of List
 
 v 1.0.2
 new: reconnect mechanism

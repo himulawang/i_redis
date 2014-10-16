@@ -13,7 +13,7 @@ class IRESPDecoder extends Converter {
   Function _onParsed;
   Function _onError;
 
-  List<int> _buffer = null;
+  Uint8List<int> _buffer = null;
   num _offset = 0;
 
   String convert(List data) {
@@ -129,7 +129,7 @@ class IRESPDecoder extends Converter {
 
   num _getBulkLength() {
     num end = this._getEndOffset();
-    Uint8List view = new Uint8List.view(_buffer, _offset, end - 1 - _offset);
+    Uint8List view = _buffer.sublist(_offset, end);
     num value = new String.fromCharCodes(view);
     _offset = end + 1;
     return int.parse(value);
@@ -138,7 +138,7 @@ class IRESPDecoder extends Converter {
   num _getRemainBytesLength()
     => (_buffer.length - _offset) < 0 ? 0 : (_buffer.length - _offset);
 
-  void allocate(List<int> data) {
+  void allocate(Uint8List<int> data) {
     if (_buffer == null) {
       _buffer = data;
       return;
