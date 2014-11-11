@@ -3,7 +3,7 @@ part of i_redis;
 class IRESPEncoder extends Converter {
   static const String DELIMITER = '\r\n';
 
-  String convert(List data) {
+  convert(List data) {
     String cmd = data.removeAt(0);
 
     BytesBuilder bb = new BytesBuilder();

@@ -139,7 +139,7 @@ class IRedis extends IRedisCommand {
     iRESPDecoder.reset();
   }
 
-  _onConnect(Socket socket) {
+  _onConnect(socket) {
     connection = socket;
     connection.listen(_onData, onError: (e) {
       String message = e.toString();
@@ -245,7 +245,7 @@ class IRedis extends IRedisCommand {
   _onPubSubMessage(List result) {
     String type = result[0];
     String channel = result[1];
-    String param1 = result[2];
+    String param1 = result[2].toString();
 
     if (type == CMD_MESSAGE &&
       subOnData.containsKey(channel))
@@ -258,13 +258,13 @@ class IRedis extends IRedisCommand {
 
     if (type == CMD_SUBSCRIBE) {
       Completer completer = pubOnSubscribe.remove(channel);
-      if (completer == null) return;
+      if (completer == null) return null;
       return completer.complete(param1);
     }
 
     if (type == CMD_PSUBSCRIBE) {
       Completer completer = pubOnPsubscribe.remove(channel);
-      if (completer == null) return;
+      if (completer == null) return null;
       return completer.complete(param1);
     }
 
@@ -278,7 +278,7 @@ class IRedis extends IRedisCommand {
       if (subOnData.length == 0 && psubOnData.length == 0) MODE_PUBSUB = false;
 
       Completer completer = pubOnUnsubscribe.remove(channel);
-      if (completer == null) return;
+      if (completer == null) return null;
 
       return completer.complete(param1);
     }
@@ -293,7 +293,7 @@ class IRedis extends IRedisCommand {
       if (subOnData.length == 0 && psubOnData.length == 0) MODE_PUBSUB = false;
 
       Completer completer = pubOnPunsubscribe.remove(channel);
-      if (completer == null) return;
+      if (completer == null) return null;
 
       return completer.complete(param1);
     }

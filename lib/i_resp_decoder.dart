@@ -13,7 +13,7 @@ class IRESPDecoder extends Converter {
   Function _onParsed;
   Function _onError;
 
-  Uint8List<int> _buffer = null;
+  Uint8List _buffer = null;
   num _offset = 0;
 
   String convert(List data) {
@@ -29,20 +29,20 @@ class IRESPDecoder extends Converter {
 
       try {
         if (type == BULK_STRING) {
-          String reply = parse(type);
+          var reply = parse(type);
           if (reply == null) break;
           if (reply is INil) reply = null;
           _onParsed(reply);
         } else if (type == ARRAY) {
           rollbackOffset = _offset - 1;
-          List reply = parse(type);
+          var reply = parse(type);
           _onParsed(reply);
         } else if (type == SIMPLE_STRING || type == INTEGER) {
-          String reply = parse(type);
+          var reply = parse(type);
           if (reply == null) break;
           _onParsed(reply);
         } else if (type == ERROR) {
-          String reply = parse(type);
+          var reply = parse(type);
           if (reply == null) break;
           _onError(reply);
         }
@@ -90,7 +90,7 @@ class IRESPDecoder extends Converter {
       List reply = [];
       offset = _offset - 1;
       int eleType;
-      String result;
+      var result;
 
       for (num i = 0; i < valueLength; ++i) {
         eleType = _buffer[_offset++];
@@ -130,7 +130,7 @@ class IRESPDecoder extends Converter {
   num _getBulkLength() {
     num end = this._getEndOffset();
     Uint8List view = _buffer.sublist(_offset, end);
-    num value = new String.fromCharCodes(view);
+    String value = new String.fromCharCodes(view);
     _offset = end + 1;
     return int.parse(value);
   }
@@ -138,7 +138,7 @@ class IRESPDecoder extends Converter {
   num _getRemainBytesLength()
     => (_buffer.length - _offset) < 0 ? 0 : (_buffer.length - _offset);
 
-  void allocate(Uint8List<int> data) {
+  void allocate(Uint8List data) {
     if (_buffer == null) {
       _buffer = data;
       return;
@@ -179,6 +179,6 @@ class IRESPDecoder extends Converter {
     _offset = 0;
   }
 
-  void bindOnParsed(Function onParsed) => _onParsed = onParsed;
-  void bindOnParserError(Function onError) => _onError = onError;
+  bindOnParsed(Function onParsed) => _onParsed = onParsed;
+  bindOnParserError(Function onError) => _onError = onError;
 }

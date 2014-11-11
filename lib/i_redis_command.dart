@@ -219,8 +219,8 @@ class IRedisCommand {
   static const CMD_SAVE = 'save';
   static const CMD_SHUTDOWN = 'shutdown';
 
-  Future send(List<String> data);
-  Future _send(List<String> data);
+  send(List<String> data) {}
+  _send(List<String> data) {}
 
   // Connection
   Future<String> auth(String password) => _send([CMD_AUTH, password]);
@@ -235,17 +235,23 @@ class IRedisCommand {
 
   // Key
   Future<num> del(keyOrKeys) {
-    if (keyOrKeys is String) return send([CMD_DEL, keyOrKeys]);
-    if (keyOrKeys is List) return send(keyOrKeys..insert(0, CMD_DEL));
+    Future result;
+    if (keyOrKeys is String) {
+      result = send([CMD_DEL, keyOrKeys]);
+    }
+    if (keyOrKeys is List) {
+      result = send(keyOrKeys..insert(0, CMD_DEL));
+    }
+    return result;
   }
 
   Future<String> migrate(String host, int port, String key, int destinationDB,
-                 num timeout, { bool copy: null, bool replace: null}) {
+                 num timeout, { copy: null, replace: null}) {
     List list = [CMD_MIGRATE, host, port, key, destinationDB, timeout];
 
     // these two parameter need redis 3.0 or above
-    if (copy) list.add(PARAM_COPY);
-    if (replace) list.add(PARAM_REPLACE);
+    if (copy != null) list.add(PARAM_COPY);
+    if (replace != null) list.add(PARAM_REPLACE);
 
     return send(list);
   }
@@ -636,7 +642,7 @@ class IRedisCommand {
 
   Future<num> zcard(String key) => send([CMD_ZCARD, key]);
 
-  Future<List> zrange(String key, String start, String stop,
+  Future<List> zrange(String key, start, stop,
                     {bool withScores: false}) {
     List list = [CMD_ZRANGE, key, start, stop];
     if (withScores) list.add(PARAM_WITHSCORES);
@@ -680,7 +686,7 @@ class IRedisCommand {
     return send(list);
   }
 
-  Future<num> zremrangebyscore(String key, String min, String max)
+  Future<num> zremrangebyscore(String key, min, max)
     => send([CMD_ZREMRANGEBYSCORE, key, min, max]);
 
   Future<num> zunionstore(String destination, List keys, {List weights: null,
@@ -728,7 +734,7 @@ class IRedisCommand {
   Future<num> zrank(String key, member)
     => send([CMD_ZRANK, key, member]);
 
-  Future<List> zrevrange(String key, String start, String stop,
+  Future<List> zrevrange(String key, start, stop,
                       {bool withScores: false}) {
     List list = [CMD_ZREVRANGE, key, start, stop];
     if (withScores) list.add(PARAM_WITHSCORES);
@@ -762,15 +768,15 @@ class IRedisCommand {
   }
 
   // Pub/Sub
-  Future<String> subscribe(String channel, Function onData,
-                           { Function onDone: null });
+  subscribe(String channel, Function onData,
+                           { Function onDone: null }) {}
 
-  Future<String> unsubscribe(String channel);
+  unsubscribe(String channel) {}
 
-  Future<String> psubscribe(String pattern, Function onData,
-                            { Function onDone: null });
+  psubscribe(String pattern, Function onData,
+                            { Function onDone: null }) {}
 
-  Future<String> punsubscribe(String pattern);
+  punsubscribe(String pattern) {}
 
   Future<num> publish(String channel, String message)
     => send([CMD_PUBLISH, channel, message]);
@@ -792,13 +798,13 @@ class IRedisCommand {
   }
 
   // Transaction
-  Future multi();
+  multi() {}
 
-  Future exec();
+  exec() {}
 
-  Future discard();
+  discard() {}
 
-  Future watch(keyOrKeys) {
+  watch(keyOrKeys) {
     if (keyOrKeys is String) return send([CMD_WATCH, keyOrKeys]);
     if (keyOrKeys is List) return send(keyOrKeys..insert(0, CMD_WATCH));
   }
@@ -909,5 +915,5 @@ class IRedisCommand {
 
   Future<String> sync() => send([CMD_SYNC]);
 
-  Future monitor();
+  monitor(Function onData) {}
 }
